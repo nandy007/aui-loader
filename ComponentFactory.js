@@ -138,12 +138,40 @@ class ComponentFactory {
         this.$module = funcFragments.join('\n');
     }
 
+    uiSplite($els){
+        const $ = this.$;
+        let templateStr, templates = [], _this = this;
+        $els.each(function(){
+            const $tpl = $(this), type = $tpl.attr('type'), id = $tpl.attr('id');
+            if(type==='template'){
+                if(!id){
+                    console.log('组件解析错误：模板不符合规范，缺少[ id ]属性。')
+                    return;
+                }
+                templates.push(`JQLite.template.setter('${id}', `, _this.trim(stringify($tpl.html(), true)), `);`);
+            }else{
+                if(templateStr){
+                    console.log('组件解析错误：发现多个ui定义')
+                    return;
+                }
+                templateStr = _this.trim($tpl.html());
+            }
+            
+        });
+
+        return {
+            templateStr,
+            templates
+        };
+    }
+
     decompose(options) {
         const decompose = this._decompose;
         if(decompose) return decompose;
         const $ = this.$;
-        const templateStr = this.trim($('ui').html());
+        const {templateStr, templates} = this.uiSplite($('ui'));
         const moduleStr = this.trim($('script').html());
+        
         let styleStr = this.trim($('style').html());
         const styleType = $('style').attr('type') || 'css';
         let globalCss = options && options[styleType+'Global'];
@@ -165,7 +193,8 @@ class ComponentFactory {
             styleObj: {
                 type: styleType,
                 text: styleStr
-            }
+            },
+            templates: templates.length===0 ? '' : templates.join('\n')
         }
     }
 
@@ -204,11 +233,12 @@ class ComponentFactory {
     }
 
     createComponent(options) {
-        const { templateStr, moduleStr, styleObj } = this.decompose(options);
+        const { templateStr, moduleStr, styleObj, templates } = this.decompose(options);
         const auiClassStr = options.auiclass || `require("agile-ui")`; // 可指定aui类全局变量
         const funcFragments = [
             moduleStr,
             '',
+            templates,
             `${auiClassStr}.AuiComponent.create(module.exports.default || module.exports, ` + stringify(templateStr, true) + ');'
         ];
 
