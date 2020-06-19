@@ -1,4 +1,5 @@
 const loaderUtils = require('loader-utils');
+const cheerio = require('cheerio');
 const jqlite = require('chestnut-utils').jqlite;
 
 function stringify(str, isArraySel) {
@@ -148,7 +149,8 @@ class ComponentFactory {
                     console.log('组件解析错误：模板不符合规范，缺少[ id ]属性。')
                     return;
                 }
-                templates.push(`JQLite.template.setter('${id}', `, _this.trim(stringify($tpl.html(), true)), `);`);
+                const $$ = cheerio.load('<ui>' + $tpl.html() + '</ui>', {decodeEntities:false});
+                templates.push(`JQLite.template.setter('${id}', `, _this.trim(stringify($$('ui').html(), true)), `);`);
             }else{
                 if(templateStr){
                     console.log('组件解析错误：发现多个ui定义')
