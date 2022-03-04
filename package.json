@@ -1,0 +1,35 @@
+{
+  "name": "aui-loader",
+  "version": "1.0.0",
+  "description": "用于webpack的aui组件解析",
+  "main": "index.js",
+  "scripts": {
+    "pack": "node pack.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nandy007/aui-loader.git"
+  },
+  "keywords": [
+    "agile-ui",
+    "aui",
+    "组件化开发web"
+  ],
+  "author": "nandy007",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nandy007/aui-loader/issues"
+  },
+  "homepage": "https://github.com/nandy007/aui-loader#readme",
+  "dependencies": {
+    "agile-ui": "^0.3.0",
+    "chestnut-utils": "^0.2.1",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.5",
+    "postcss-loader": "^2.0.6",
+    "style-loader": "^0.18.2",
+    "uglify-es": "^3.3.9",
+    "url-loader": "^0.5.9"
+  },
+  "devDependencies": {}
+}
