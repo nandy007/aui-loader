@@ -15,7 +15,6 @@ class ComponentFactoryInVue {
         const ret = this.parseHTML();
 
         if(ret){
-            console.log('444444444444444444444444')
             this.createVue();
 
         } else {
