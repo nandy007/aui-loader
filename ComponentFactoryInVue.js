@@ -15,7 +15,7 @@ class ComponentFactoryInVue {
         const ret = this.parseHTML();
 
         if(ret){
-
+            console.log('444444444444444444444444')
             this.createVue();
 
         } else {
@@ -66,7 +66,9 @@ class ComponentFactoryInVue {
     }
 
     createVue(){
-        this.$module = this.replaceAuiDefined(this.content);
+        this.$module = this.replaceAuiDefined(this.content).replace(/<style[^>]*>/ig, (s)=>{
+            return s + this.createCssVar();
+        });
     }
 
     replaceAuiDefined(content){
@@ -75,9 +77,26 @@ class ComponentFactoryInVue {
         });
     }
 
+    createCssVar(style){
+        let cssVar = (this.options && this.options.cssvar) || [];
+        if(!(cssVar instanceof Array)){
+            cssVar = [cssVar];
+        }
+
+        cssVar = cssVar.slice(0);
+
+        cssVar.forEach(function(v, i){
+            v = v.replace(/\\/g, '/');
+            cssVar[i] = `@import "${v}";`
+        });
+
+        return '\n' + cssVar.join('\n') + '\n' + (style||'');
+    }
+
     createStyle(){
         const {style} = this.html;
-        this.$module = style;
+
+        this.$module = this.createCssVar(style);
     }
 
     createContent(){
